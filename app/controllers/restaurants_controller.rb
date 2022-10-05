@@ -5,18 +5,28 @@ class RestaurantsController < ApplicationController
 
     def index
         restaurants = Restaurant.all
-        render json: restaurants, include: ['pizzas']
+        render json: restaurants
     
     end
 
     def show
-        restaurant = Restaurant.find(params[:id])
-        render json: restaurant, include: ['pizzas']
+        restaurant = find_restaurant
+        render json: restaurant
+    end
+
+    def destroy
+        restaurant = find_restaurant
+        restaurant.destroy
+        head :no_content
     end
 
     private
 
+    def find_restaurant
+        Restaurant.find(params[:id])
+    end
+
     def render_not_found_response
-        render json: { error: "Author not found" }, status: :not_found
+        render json: { errors: ["Restaurant not found"] }, status: :not_found
     end
 end
